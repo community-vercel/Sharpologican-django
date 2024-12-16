@@ -1,0 +1,64 @@
+# Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Virtual environment directories
+venv/
+env/
+.venv/
+.env/
+
+# Django migration files
+*/migrations/*
+!*/migrations/__init__.py
+
+# SQLite database
+db.sqlite3
+
+# Media and static files
+media/
+static/
+
+# Django secret key and sensitive information files
+*.env
+*.ini
+*.json
+
+# VSCode settings
+.vscode/
+
+# PyCharm settings
+.idea/
+
+# MacOS system files
+.DS_Store
+
+# Linux system files
+*~
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+
+# Package distribution files
+*.egg
+*.egg-info
+dist/
+build/
+
+# Unit test coverage reports
+.coverage
+.coverage.*
+nosetests.xml
+test_*.xml
+
+# Pipenv and Poetry files
+Pipfile.lock
+poetry.lock
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
