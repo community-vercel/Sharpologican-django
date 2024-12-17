@@ -124,7 +124,9 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3001',  # Replace with your Next.js frontend URL
+    'http://localhost:3001', 
+    
+    # Replace with your Next.js frontend URL
     'http://localhost:3000',
     'http://127.0.0.1:8000',
     # Replace with your Next.js frontend URL
