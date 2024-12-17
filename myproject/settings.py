@@ -129,14 +129,9 @@ CORS_ALLOWED_ORIGINS = [
     # Replace with your Next.js frontend URL
     'http://localhost:3000',
     'http://127.0.0.1:8000',
-<<<<<<< HEAD
     'https://sharplogicians.com'
-    
-=======
-
-    'https://sharplogicians.com',
+   
     # Replace with your Next.js frontend URL
->>>>>>> 72fb554a6e34f398183827431889c302014e4951
 ]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
