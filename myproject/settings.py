@@ -129,8 +129,8 @@ CORS_ALLOWED_ORIGINS = [
     # Replace with your Next.js frontend URL
     'http://localhost:3000',
     'http://127.0.0.1:8000',
-
-    'https://sharplogicians.com',
+    'https://sharplogicians.com'
+   
     # Replace with your Next.js frontend URL
 ]
 # Static files (CSS, JavaScript, Images)
