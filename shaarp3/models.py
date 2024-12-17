@@ -66,7 +66,6 @@ class Team(models.Model):
     name = models.CharField(max_length=3255)
     slug = models.CharField(max_length=655)
     description=models.TextField( blank=True, null=True)
-
     title = models.CharField(max_length=3255)
     image = models.ImageField(upload_to='team/', blank=True, null=True)
 

@@ -546,7 +546,6 @@ def get_portfolio(request):
                 'description':portfolio.description,
                 'des':teams.description,
                 'portfolioid':teams.id,
-
                 'heading': portfolio.heading,
                 'buttonText':portfolio.text_button ,
                 'image':portfolio.image.url if portfolio.image else None,
@@ -722,8 +721,6 @@ def update_test(request):
             return JsonResponse({'status': 'success', 'message': 'tst updated successfully!'}, status=200)
 
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'tst not found.'}, status=404)
-        except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=400)
         except KeyError:
             return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
