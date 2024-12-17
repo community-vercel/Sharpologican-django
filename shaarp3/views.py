@@ -197,7 +197,6 @@ def add_team(request):
                 name=data.get('name'),
                 slug = slugify(data.get('name')),
                 description=data.get('description'),
-
                 title=data.get('title'),
                 image=image
             )
