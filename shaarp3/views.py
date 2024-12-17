@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import json
-from .models import Service, AboutUs, Portfolio,Counts, Team, Testimonial, News, Contact,Client,ServiceDetail,portfolioDetail,newsDetail,QuoteRequest,ContactUs
+from .models import Service, AboutUs, Portfolio,Counts, Team, Testimonial, News, Contact,Client,ServiceDetail,HomeDetail,portfolioDetail,newsDetail,QuoteRequest,ContactUs
 from django.shortcuts import get_object_or_404
 import os
 
@@ -38,7 +38,7 @@ def super_admin_login(request):
             return JsonResponse({
                 'status': 'error',
                 'message': 'Invalid credentials or not a super admin.'
-            }, status=400)
+            }, status=200)
     else:
         return JsonResponse({
             'status': 'error',
@@ -80,7 +80,7 @@ def super_admin_required(view_func):
 #             )
 #             return JsonResponse({'status': 'success', 'message': 'Service added successfully!'}, status=201)
 #         except KeyError:
-#             return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+#             return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
 #     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 
 @csrf_exempt
@@ -96,7 +96,7 @@ def add_service(request):
         detailed_description = request.POST.get('detailedDescription')
 
         if not title or not description or not image or not detailed_description:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
         
         try:
             service = Service.objects.create(
@@ -161,7 +161,7 @@ def add_about_us(request):
                 
                 
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 @csrf_exempt
 @super_admin_required
@@ -183,7 +183,7 @@ def add_portfolio(request):
             )
             return JsonResponse({'status': 'success', 'message': 'Portfolio added successfully!'}, status=201)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 @csrf_exempt
 @super_admin_required
@@ -203,7 +203,7 @@ def add_team(request):
             )
             return JsonResponse({'status': 'success', 'message': 'Team member added successfully!'}, status=201)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 
 @csrf_exempt
@@ -224,7 +224,7 @@ def add_testimonial(request):
             )
             return JsonResponse({'status': 'success', 'message': 'Testimonial added successfully!'}, status=201)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 @csrf_exempt
 @super_admin_required
@@ -246,7 +246,7 @@ def add_news(request):
             )
             return JsonResponse({'status': 'success', 'message': 'News article added successfully!'}, status=201)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 @csrf_exempt
 @super_admin_required
@@ -297,7 +297,7 @@ def add_contact(request):
             return JsonResponse({'status': 'success', 'message': 'Contact info added/updated successfully!'}, status=201)
         
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
     
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 
@@ -333,7 +333,7 @@ def get_about_us(request):
                 'image': about_us.image.url if about_us.image else None
             }
             return JsonResponse({'status': 'success', 'data': data}, status=200)
-        return JsonResponse({'status': 'error', 'message': 'About Us data not found.'}, status=404)
+        return JsonResponse({'status': 'error', 'message': 'About Us data not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
 @csrf_exempt
 def get_portfoli(request):
@@ -423,7 +423,6 @@ def get_contact(request):
                 
             }
             return JsonResponse({'status': 'success', 'data': data}, status=200)
-        return JsonResponse({'status': 'error', 'message': 'Contact info not found.'}, status=404)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
 @csrf_exempt
 def get_clients(request):
@@ -456,7 +455,7 @@ def delete_service(request):
             service.delete()
             return JsonResponse({'status': 'success', 'message': 'Service deleted successfully!'}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Service not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'Service not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only DELETE allowed.'}, status=405)
 @csrf_exempt
 @super_admin_required
@@ -474,7 +473,7 @@ def get_service(request):
             }
             return JsonResponse({'status': 'success', 'data': service_data}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Service not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'Service not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
 
 @csrf_exempt
@@ -506,11 +505,11 @@ def update_service(request):
             return JsonResponse({'status': 'success', 'message': 'Service updated successfully!'}, status=200)
 
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Service not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'Service not found.'}, status=200)
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=200)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only PUT allowed.'}, status=405)
 
@@ -527,7 +526,7 @@ def delete_portfolio(request):
             service.delete()
             return JsonResponse({'status': 'success', 'message': 'Portfolio deleted successfully!'}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'portfolio not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'portfolio not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only DELETE allowed.'}, status=405)
 
 @csrf_exempt
@@ -552,7 +551,7 @@ def get_portfolio(request):
             }
             return JsonResponse({'status': 'success', 'data': portfolio_data}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'portfolio not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'portfolio not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
 
 @csrf_exempt
@@ -587,11 +586,11 @@ def update_portfolio(request):
             return JsonResponse({'status': 'success', 'message': 'portfolio updated successfully!'}, status=200)
 
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'portfolio not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'portfolio not found.'}, status=200)
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=200)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only PUT allowed.'}, status=405)
 
@@ -615,7 +614,7 @@ def get_teams(request):
             }
             return JsonResponse({'status': 'success', 'data': team_data}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
 
 @csrf_exempt
@@ -685,11 +684,11 @@ def update_team(request):
             return JsonResponse({'status': 'success', 'message': 'team updated successfully!'}, status=200)
 
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=200)
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=200)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only PUT allowed.'}, status=405)
 
@@ -721,9 +720,9 @@ def update_test(request):
             return JsonResponse({'status': 'success', 'message': 'tst updated successfully!'}, status=200)
 
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=200)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only PUT allowed.'}, status=405)
 
@@ -758,11 +757,11 @@ def update_news(request):
             return JsonResponse({'status': 'success', 'message': 'News updated successfully!'}, status=200)
 
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'tst not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'tst not found.'}, status=200)
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'}, status=200)
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only PUT allowed.'}, status=405)
 
@@ -781,7 +780,7 @@ def delete_test(request):
             test.delete()
             return JsonResponse({'status': 'success', 'message': 'Test deleted successfully!'}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only DELETE allowed.'}, status=405)
 
 
@@ -798,7 +797,7 @@ def delete_team(request):
             team.delete()
             return JsonResponse({'status': 'success', 'message': 'Team deleted successfully!'}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only DELETE allowed.'}, status=405)
 
 @csrf_exempt
@@ -814,7 +813,7 @@ def delete_news(request):
             news.delete()
             return JsonResponse({'status': 'success', 'message': 'news deleted successfully!'}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'news not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'news not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only DELETE allowed.'}, status=405)
 
 
@@ -847,7 +846,7 @@ def add_service_detail(request):
         try:
             service = Service.objects.get(slug=slug)
         except Service.DoesNotExist:
-            return JsonResponse({"error": "Service not found"}, status=404)
+            return JsonResponse({"error": "Service not found"}, status=200)
 
         # Get the text fields from the request
         detail = request.POST.get('detail')
@@ -904,7 +903,7 @@ def get_service_detail(request):
         return JsonResponse(response_data, status=200)
 
     except ServiceDetail.DoesNotExist:
-        return JsonResponse({"error": "Service detail not found"}, status=404)
+        return JsonResponse({"error": "Service detail not found"}, status=200)
 @csrf_exempt  # Allow PUT request without CSRF token for testing purposes
 @super_admin_required  # Ensure only super admin can access this endpoint
 
@@ -946,10 +945,10 @@ def update_service_detail(request):
         }, status=200)
 
     except Service.DoesNotExist:
-        return JsonResponse({"error": "Service not found"}, status=404)
+        return JsonResponse({"error": "Service not found"}, status=200)
 
     except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        return JsonResponse({"error": "Invalid JSON data"}, status=200)
     
 @csrf_exempt  # Allow POST requests without CSRF token (for testing purposes)
 @super_admin_required  # Ensure only super admin can access this endpoint
@@ -960,7 +959,7 @@ def add_portfolio_detail(request):
         try:
             portfolio = Portfolio.objects.get(slug=slug)
         except Service.DoesNotExist:
-            return JsonResponse({"error": "Service not found"}, status=404)
+            return JsonResponse({"error": "Service not found"}, status=200)
 
         # Get the text fields from the request
         heading = request.POST.get('heading')
@@ -1036,7 +1035,7 @@ def get_portfolio_detail(request):
         return JsonResponse(response_data, status=200)
 
     except ServiceDetail.DoesNotExist:
-        return JsonResponse({"error": "Service detail not found"}, status=404)
+        return JsonResponse({"error": "Service detail not found"}, status=200)
 @csrf_exempt  # Allow PATCH/PUT without CSRF token for testing purposes
 @super_admin_required  # Ensure only super admin can access this endpoint
 
@@ -1055,7 +1054,7 @@ def update_portfolio_detail(request):
         try:
             updated_data = request.POST
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+            return JsonResponse({"error": "Invalid JSON data"}, status=200)
 
         # Update the fields if they are provided in the request
         if 'heading' in updated_data:
@@ -1092,7 +1091,7 @@ def update_portfolio_detail(request):
         }, status=200)
 
     except portfolioDetail.DoesNotExist:
-        return JsonResponse({"error": "Portfolio detail not found"}, status=404)
+        return JsonResponse({"error": "Portfolio detail not found"}, status=200)
 @csrf_exempt
 @super_admin_required  # Ensure only super admin can access this endpoint
 def add_news_detail(request):
@@ -1119,9 +1118,9 @@ def add_news_detail(request):
         }, status=201)
 
     except News.DoesNotExist:
-        return JsonResponse({"error": "News not found"}, status=404)
+        return JsonResponse({"error": "News not found"}, status=200)
     except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        return JsonResponse({"error": "Invalid JSON data"}, status=200)
 @csrf_exempt
 def get_news_detail(request):
     slug = request.POST.get('slug')
@@ -1146,7 +1145,7 @@ def get_news_detail(request):
         return JsonResponse(response_data, status=200)
 
     except newsDetail.DoesNotExist:
-        return JsonResponse({"error": "News detail not found"}, status=404)
+        return JsonResponse({"error": "News detail not found"}, status=200)
     
 @csrf_exempt
 @super_admin_required  # Ensure only super admin can access this endpoint
@@ -1180,9 +1179,9 @@ def update_news_detail(request):
         }, status=200)
 
     except newsDetail.DoesNotExist:
-        return JsonResponse({"error": "News detail not found"}, status=404)
+        return JsonResponse({"error": "News detail not found"}, status=200)
     except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        return JsonResponse({"error": "Invalid JSON data"}, status=200)
     
 @csrf_exempt  # Only use this for testing, or add proper CSRF handling for production
 def submit_quote(request):
@@ -1206,7 +1205,7 @@ def submit_quote(request):
 
             # Perform some basic validation (optional)
             if not first_name or not last_name or not phone_number or not email:
-                return JsonResponse({"error": "Missing required fields"}, status=400)
+                return JsonResponse({"error": "Missing required fields"}, status=200)
 
             # Save the data to the database
             quote_request = QuoteRequest(
@@ -1228,7 +1227,7 @@ def submit_quote(request):
             return JsonResponse({'message': 'Quote request submitted successfully!'}, status=201)
 
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
+            return JsonResponse({"error": "Invalid JSON"}, status=200)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
@@ -1298,7 +1297,7 @@ def add_contact_us(request):
             return JsonResponse({'message': 'Contact Us details added successfully'}, status=201)
 
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+            return JsonResponse({'error': 'Invalid JSON data'}, status=200)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 @csrf_exempt
@@ -1317,10 +1316,10 @@ def get_contact_us(request):
             }
             return JsonResponse(response_data, status=200)
         else:
-            return JsonResponse({"error": "Contact Us details not found"}, status=404)
+            return JsonResponse({'error': 'Invalid JSON data'}, status=200)
 
     except ContactUs.DoesNotExist:
-        return JsonResponse({"error": "Contact Us details not found"}, status=404)
+            return JsonResponse({'error': 'Invalid JSON data'}, status=200)
 
 @csrf_exempt
 @super_admin_required
@@ -1360,7 +1359,7 @@ def add_count(request):
           
                
         except KeyError:
-            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only POST allowed.'}, status=405)
 
 @csrf_exempt
@@ -1377,7 +1376,7 @@ def get_counts(request):
             })
         
         return JsonResponse({'status': 'success', 'data': data}, status=200)
-    return JsonResponse({'status': 'error', 'message': 'About Us data not found.'}, status=404)
+    return JsonResponse({'status': 'error', 'message': 'About Us data not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
 
 @csrf_exempt
@@ -1397,7 +1396,7 @@ def get_counts_data(request):
         
         }
         return JsonResponse({'status': 'success', 'data': data}, status=200)
-    return JsonResponse({'status': 'error', 'message': 'About Us data not found.'}, status=404)
+    return JsonResponse({'status': 'error', 'message': 'About Us data not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
 
 
@@ -1414,7 +1413,67 @@ def delete_counts(request):
             team.delete()
             return JsonResponse({'status': 'success', 'message': 'Count deleted successfully!'}, status=200)
         except Service.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=404)
+            return JsonResponse({'status': 'error', 'message': 'team not found.'}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only DELETE allowed.'}, status=405)
 
+
+@csrf_exempt
+def add_home_detail(request):
+    if request.method in ['POST', 'PUT']:
+        data = json.loads(request.body)
         
+        # Check if there's already a record in the database
+        home_detail, created = HomeDetail.objects.get_or_create(id=1)  # Assume there's only one record
+
+        # Update the record if it already exists, otherwise create a new one
+        home_detail.metaname = data.get('metaname', home_detail.metaname)
+        home_detail.metadescription = data.get('metadescription', home_detail.metadescription)
+        home_detail.keywords = data.get('keywords', home_detail.keywords)
+        home_detail.metanamecontact = data.get('metanamecontact', home_detail.metanamecontact)
+        home_detail.metadescriptioncontact = data.get('metadescriptioncontact', home_detail.metadescriptioncontact)
+        home_detail.keywordscontact = data.get('keywordscontact', home_detail.keywordscontact)
+        home_detail.metanamequote = data.get('metanamequote', home_detail.metanamequote)
+        home_detail.metadescriptionquote = data.get('metadescriptionquote', home_detail.metadescriptionquote)
+        home_detail.keywordsquote = data.get('keywordsquote', home_detail.keywordsquote)
+        home_detail.heading = data.get('heading', home_detail.heading)
+        home_detail.detail = data.get('detail', home_detail.detail)
+        home_detail.footeremail = data.get('footeremail', home_detail.footeremail)
+        home_detail.footeremail2 = data.get('footeremail2', home_detail.footeremail2)
+
+        # Save the updated or created record
+        home_detail.save()
+
+        # Return appropriate response
+        if created:
+            return JsonResponse({'message': 'Home Detail added successfully!'}, status=201)
+        else:
+            return JsonResponse({'message': 'Home Detail updated successfully!'}, status=200)
+    else:
+        return JsonResponse({'message': 'Invalid method'}, status=405)
+    
+@csrf_exempt
+
+def get_home_detail(request):
+    if request.method == 'GET':
+        try:
+            home_detail = HomeDetail.objects.all().first()  # We assume only one record exists.
+            if home_detail:
+                return JsonResponse({
+                    'metaname': home_detail.metaname,
+                    'metadescription': home_detail.metadescription,
+                    'keywords': home_detail.keywords,
+                    'metanamecontact': home_detail.metanamecontact,
+                    'metadescriptioncontact': home_detail.metadescriptioncontact,
+                    'keywordscontact': home_detail.keywordscontact,
+                    'metanamequote': home_detail.metanamequote,
+                    'metadescriptionquote': home_detail.metadescriptionquote,
+                    'keywordsquote': home_detail.keywordsquote,
+                    'heading': home_detail.heading,
+                    'detail': home_detail.detail,
+                    'footeremail': home_detail.footeremail,
+                    'footeremail2': home_detail.footeremail2,
+                }, status=200)
+            else:
+                return JsonResponse({'message': 'No data found'}, status=200)
+        except HomeDetail.DoesNotExist:
+            return JsonResponse({'message': 'Home Detail not found!'}, status=200)

@@ -60,6 +60,8 @@ urlpatterns = [
     path('get-counts/', views.get_counts_data, name='get_count'),
 
     path('delete-counts/', views.delete_counts, name='get_count'),
+    path('add-home-detail/', views.add_home_detail, name='add-home-detail'),
+    path('get-home-detail/', views.get_home_detail, name='get-home-detail'),
 
 
    
