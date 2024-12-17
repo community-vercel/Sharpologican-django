@@ -155,5 +155,25 @@ class Counts(models.Model):
     title = models.TextField()
     num = models.TextField()
     description= models.TextField()
+    
+    
+class HomeDetail(models.Model):
+    metaname = models.CharField(max_length=777, null=True)
+    metadescription = models.CharField(max_length=787, null=True)
+    keywords = models.TextField(blank=True, null=True)
+    metanamecontact = models.CharField(max_length=777, null=True)
+    metadescriptioncontact = models.CharField(max_length=787, null=True)
+    keywordscontact = models.TextField(blank=True, null=True)
+    metanamequote = models.CharField(max_length=777, null=True)
+    metadescriptionquote = models.CharField(max_length=787, null=True)
+    keywordsquote = models.TextField(blank=True, null=True)
+    heading = models.TextField()
+    detail = models.TextField()
+    footeremail = models.TextField()
+    footeremail2 = models.TextField()
+
+    def __str__(self):
+        return self.metaname if self.metaname else 'Home Detail'
+
 
     
