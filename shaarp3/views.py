@@ -1450,7 +1450,7 @@ def add_home_detail(request):
         if created:
             return JsonResponse({'message': 'Home Detail added successfully!'}, status=201)
         else:
-            return JsonResponse({'message': 'Home Detail updated successfully!'}, status=404)
+            return JsonResponse({'message': 'Home Detail updated successfully!'}, status=200)
     else:
         return JsonResponse({'message': 'Invalid method'}, status=405)
     
@@ -1477,6 +1477,6 @@ def get_home_detail(request):
                     'footeremail2': home_detail.footeremail2,
                 }, status=200)
             else:
-                return JsonResponse({'message': 'No data found'}, status=404)
+                return JsonResponse({''}, status=200)
         except HomeDetail.DoesNotExist:
             return JsonResponse({'message': 'Home Detail not found!'}, status=400)
