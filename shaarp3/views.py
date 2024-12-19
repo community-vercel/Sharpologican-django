@@ -94,7 +94,7 @@ def add_service(request):
         description = request.POST.get('description','')
         image = request.FILES.get('image')  # Retrieve uploaded image from the request
         image2 = request.FILES.get('image2')
-        detailed_description = request.POST.get('detailedDescription','')
+        detailed_description = request.POST.get('detailedDescription','testing')
 
         if not title or not description or not image:
             return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=404)
@@ -355,11 +355,9 @@ def get_portfoli(request):
                 'slug':about_us.slug,
                 'link': about_us.link,
                 'description':about_us.description,
-                    
                 'buttonText': about_us.text_button ,
-                
                 'image': about_us.image.url if about_us.image else None,
-                'image2': about_us.image2.url if about_us.image2 else None
+                'image2':about_us.image2.url if about_us.image2 else None
 
             })
         return JsonResponse({'status': 'success', 'data': data}, status=200)
@@ -499,7 +497,7 @@ def update_service(request):
             
             # Parse the JSON data from the request body
             data = request.POST
-            image=request.FILES.get('image'),
+            image=request.FILES.get('image')
             image2=request.FILES.get('image2')
 
 
