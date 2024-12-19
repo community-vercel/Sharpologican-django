@@ -91,11 +91,12 @@ def add_service(request):
         title = request.POST.get('title')
         slug = slugify(title)
 
-        description = request.POST.get('description')
+        description = request.POST.get('description','')
         image = request.FILES.get('image')  # Retrieve uploaded image from the request
-        detailed_description = request.POST.get('detailedDescription')
+        image2 = request.FILES.get('image2')
+        detailed_description = request.POST.get('detailedDescription','')
 
-        if not title or not description or not image or not detailed_description:
+        if not title or not description or not image:
             return JsonResponse({'status': 'error', 'message': 'Missing required fields.'}, status=404)
         
         try:
@@ -103,7 +104,9 @@ def add_service(request):
                 title=title,
                 slug=slug,
                 description=description,
-                image=image,  # Save the image file
+                image=image,
+                image2=image2,
+                # Save the image file
                 detailed_description=detailed_description
             )
             return JsonResponse({'status': 'success', 'message': 'Service added successfully!'}, status=200)
@@ -168,15 +171,17 @@ def add_about_us(request):
 def add_portfolio(request):
     if request.method == 'POST':
         if 'image' in request.FILES:
-             image=request.FILES['image']
+            image=request.FILES['image']
+        if 'image2' in request.FILES:
+            image2=request.FILES['image2']
         data = request.POST
         try:
             portfolio = Portfolio.objects.create(
                 title=data.get('title'),
                 slug =slugify(data.get('title')),
                 description=data.get('description'),
-
-                image=image,  # Assuming image is sent as URL or handled in file upload
+                image2=image2,
+                image=image,  
                 heading=data.get('heading'),
                 text_button=data.get('text_button'),
                 link=data.get('link')
@@ -232,6 +237,8 @@ def add_news(request):
     if request.method == 'POST':
         if 'image' in request.FILES:
             image=request.FILES['image']
+        if 'image2' in request.FILES:
+            image2=request.FILES['image2']
         data = request.POST
 
         try:
@@ -239,7 +246,7 @@ def add_news(request):
                 title=data.get('title'),
                 slug = slugify(data.get('title')),
                 description=data.get('description'),
-
+                image2=image2,
 
                 content=data.get('name'),
                 image=image
@@ -348,10 +355,12 @@ def get_portfoli(request):
                 'slug':about_us.slug,
                 'link': about_us.link,
                 'description':about_us.description,
-
+                    
                 'buttonText': about_us.text_button ,
                 
-                'image': about_us.image.url if about_us.image else None
+                'image': about_us.image.url if about_us.image else None,
+                'image2': about_us.image2.url if about_us.image2 else None
+
             })
         return JsonResponse({'status': 'success', 'data': data}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
@@ -386,8 +395,9 @@ def get_news(request):
                 'slug':article.slug,
                 'content': article.content,
                 'description':article.description,
+                'image': article.image.url if article.image else None,
+                'image2': article.image2.url if article.image2 else None
 
-                'image': article.image.url if article.image else None
             })
         return JsonResponse({'status': 'success', 'data': data}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
@@ -470,6 +480,8 @@ def get_service(request):
                 'description': service.description,
                 'detailedDescription': service.detailed_description,
                 'image': service.image.url if service.image else None,
+                'image2': service.image2.url if service.image2 else None,
+
             }
             return JsonResponse({'status': 'success', 'data': service_data}, status=200)
         except Service.DoesNotExist:
@@ -487,7 +499,9 @@ def update_service(request):
             
             # Parse the JSON data from the request body
             data = request.POST
-            image=request.FILES.get('image')
+            image=request.FILES.get('image'),
+            image2=request.FILES.get('image2')
+
 
             # Update the service fields
             service.title = data.get('title', service.title)
@@ -498,6 +512,8 @@ def update_service(request):
             # Update image if provided
             if image:
                 service.image =image  # Assuming image is passed as a URL or file URL
+            if image2:
+                service.image2 =image2  # Assuming image is passed as a URL or file URL
 
             # Save the updated service
             service.save()
@@ -548,6 +564,8 @@ def get_portfolio(request):
                 'heading': portfolio.heading,
                 'buttonText':portfolio.text_button ,
                 'image':portfolio.image.url if portfolio.image else None,
+                'image2':portfolio.image2.url if portfolio.image2 else None,
+
             }
             return JsonResponse({'status': 'success', 'data': portfolio_data}, status=200)
         except Service.DoesNotExist:
@@ -566,6 +584,7 @@ def update_portfolio(request):
             # Parse the JSON data from the request body
             data = request.POST
             image=request.FILES.get('image')
+            image2=request.FILES.get('image2')
 
             
             # Update the service fields
@@ -579,6 +598,8 @@ def update_portfolio(request):
             # Update image if provided
             if image:
                 portfolio.image = image # Assuming image is passed as a URL or file URL
+            if image2:
+                portfolio.image2 = image2 # Assuming image is passed as a URL or file URL
 
             # Save the updated service
             portfolio.save()
@@ -648,7 +669,9 @@ def get__new_news(request):
             'description':article.description,
             'des':articles.description,
             'newsid':articles.id,
-            'image': article.image.url if article.image else None
+            'image': article.image.url if article.image else None,
+            'image2': article.image2.url if article.image2 else None
+
         }
        return JsonResponse({'status': 'success', 'data': data}, status=200)
     return JsonResponse({'status': 'error', 'message': 'Invalid method. Only GET allowed.'}, status=405)
@@ -738,7 +761,8 @@ def update_news(request):
             # Parse the JSON data from the request body
             data = request.POST
             image=request.FILES.get('image')
-         
+            image2=request.FILES.get('image2')
+
             
             # Update the service fields
             test.title = data.get('title', test.title)
@@ -750,6 +774,8 @@ def update_news(request):
             # Update image if provided
             if image:
                 test.image =image  # Assuming image is passed as a URL or file URL
+            if image2:
+                test.image2 =image2  # Assuming image is passed as a URL or file URL
 
             # Save the updated service
             test.save()
@@ -849,7 +875,7 @@ def add_service_detail(request):
             service = Service.objects.get(slug=slug)
         except Service.DoesNotExist:
             return JsonResponse({"error": "Service not found"}, status=404)
-
+        moretitle=request.POST.get('moretitle')
         detail = request.POST.get('detail')
         detail2 = request.POST.get('detail2')
 
@@ -867,6 +893,7 @@ def add_service_detail(request):
             image_1=image_1,
             image_2=image_2,
             metaname=metaname,
+            moretitle=moretitle,
             metadescription=metades,
             keywords=keywords
 
@@ -894,11 +921,15 @@ def get_service_detail(request):
             "service_title": service_detail.service.title,
             "detail": service_detail.detail,
             "detail2": service_detail.detail2,
+            'moretitle':service_detail.moretitle,
             'metaname':service_detail.metaname,
             'metades':service_detail.metadescription,
             'keywords':service_detail.keywords,
             "image1": service_detail.image_1.url if service_detail.image_1 else None,
-            "image2": service_detail.image_2.url if service_detail.image_2 else None
+            "image2": service_detail.image_2.url if service_detail.image_2 else None,
+            "image3": service_detail.service.image2.url if service_detail.service.image2 else None
+
+            
         }
 
         return JsonResponse(response_data, status=200)
@@ -926,6 +957,8 @@ def update_service_detail(request):
   
         if 'detail' in updated_data:
             service.detail = updated_data.get('detail')
+        if 'moretitle' in updated_data:
+            service.moretitle = updated_data.get('moretitle')
         if 'detail2' in updated_data:
             service.detail2 = updated_data.get('detail2')
         if image_1:
@@ -1018,7 +1051,7 @@ def get_portfolio_detail(request):
             "id": service_detail.portfolio_id,
             'title':service_detail.portfolio.title,
             'header':service_detail.portfolio.heading,
-
+            'image':service_detail.portfolio.image2.url if service_detail.portfolio.image2 else None,
             "detail": service_detail.detail,
             "heading": service_detail.heading,
             "branch": service_detail.branch,
@@ -1103,6 +1136,7 @@ def add_news_detail(request):
 
         # Validate and fetch required fields
         slug = data.get('slug')
+        author=data.get('author')
         detail = data.get('detail')
         metaname=data.get('metaname')
         metades=data.get('metades')
@@ -1113,7 +1147,7 @@ def add_news_detail(request):
         news = News.objects.get(slug=slug)
 
         # Create the NewsDetail object
-        news_detail = newsDetail.objects.create(news=news,detail=detail,metaname=metaname,metadescription=metades,keywords=keywords)
+        news_detail = newsDetail.objects.create(news=news,author=author,detail=detail,metaname=metaname,metadescription=metades,keywords=keywords)
 
         return JsonResponse({
             "message": "News detail added successfully",
@@ -1138,10 +1172,13 @@ def get_news_detail(request):
         response_data = {
             "news_id": news_detail.news.id,
             "news_title": news_detail.news.title,
+            'image':news_detail.news.image2.url if news_detail.news.image2 else None,
+            "author":news_detail.author,
             "published_date":news_detail.news.published_date,
             "detail": news_detail.detail,
             'metaname':news_detail.metaname,
             'metades':news_detail.metadescription,
+            
             'keywords':news_detail.keywords
         }
 
@@ -1166,6 +1203,8 @@ def update_news_detail(request):
         # Update the fields if they are provided
         if 'detail' in data:
             news_detail.detail = data.get('detail')
+        if 'author' in data:
+            news_detail.author = data.get('author')
         if 'metaname' in data:
             news_detail.metaname= data.get('metaname')
         if 'metades' in data:

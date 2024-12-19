@@ -8,15 +8,18 @@ class Service(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='services/', blank=True, null=True)
     detailed_description = models.TextField()
+    image2 = models.ImageField(upload_to='services/', blank=True, null=True)
+
 
 class ServiceDetail(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='details')
     image_1 = models.ImageField(upload_to='service_details/', blank=True, null=True)
     image_2 = models.ImageField(upload_to='service_details/', blank=True, null=True)
+    moretitle = models.TextField()
     detail = models.TextField()
     detail2 = models.TextField()
     metaname=models.CharField(max_length=777,null=True)
-    metadescription=models.CharField(max_length=777,null=True)
+    metadescription=models.CharField(max_length=787,null=True)
     keywords=models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -42,6 +45,8 @@ class Portfolio(models.Model):
     text_button = models.CharField(max_length=100)
     link = models.URLField(max_length=3255)
     description=models.TextField( blank=True, null=True)
+    image2 = models.ImageField(upload_to='portfolio/', blank=True, null=True)
+
     def __str__(self):
         return self.title
 
@@ -92,6 +97,7 @@ class News(models.Model):
     published_date = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='news/', blank=True, null=True)
     description=models.TextField( blank=True, null=True)
+    image2 = models.ImageField(upload_to='news/', blank=True, null=True)
 
 
     def __str__(self):
@@ -103,6 +109,8 @@ class newsDetail(models.Model):
     keywords=models.TextField(blank=True, null=True)
     news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='details')
     detail = models.TextField()
+    author = models.TextField(blank=True, null=True)
+    
 
     def __str__(self):
         return f"Details for {self.news.title}"
