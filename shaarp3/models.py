@@ -73,6 +73,7 @@ class Team(models.Model):
     description=models.TextField( blank=True, null=True)
     title = models.CharField(max_length=3255)
     image = models.ImageField(upload_to='team/', blank=True, null=True)
+    index = models.IntegerField(default=0, blank=True, null=True)
 
     def __str__(self):
         return self.name

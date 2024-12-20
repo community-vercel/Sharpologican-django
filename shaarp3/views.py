@@ -200,6 +200,8 @@ def add_team(request):
         try:
             team = Team.objects.create(
                 name=data.get('name'),
+                index=data.get('index'),
+
                 slug = slugify(data.get('name')),
                 description=data.get('description'),
                 title=data.get('title'),
@@ -366,13 +368,15 @@ def get_portfoli(request):
 @csrf_exempt
 def get_team(request):
     if request.method == 'GET':
-        team_members =Team.objects.all()
-       
+        # team_members =Team.objects.all().order
+        team_members = Team.objects.all().order_by('index')  # Ascending order by 'name'
+
         data = []
         for member in team_members:
             data.append({
                 'id': member.id,
                 'name': member.name,
+                'index':member.index,
                 'title': member.title,
                 'description':member.description,
 
@@ -627,6 +631,7 @@ def get_teams(request):
                 'name': team.name,
                 'description':team.description,
                 'title': team.title,
+                'index':team.index,
                 'image':team.image.url if team.image else None,
                 'des':teams.description,
                 'teamid':teams.id
@@ -692,6 +697,8 @@ def update_team(request):
             
             # Update the service fields
             team.title = data.get('title', team.title)
+            team.index = data.get('index', team.index)
+
             team.description=data.get('description')
             team.name = data.get('name', team.name)
           
