@@ -147,6 +147,8 @@ class QuoteRequest(models.Model):
     project_overview = models.TextField(blank=True, null=True)
     budget = models.CharField(max_length=2655, blank=True, null=True)
     ready_to_start = models.CharField(max_length=2055, blank=True, null=True)
+    published_date = models.DateTimeField(auto_now_add=True,blank=True, null=True)
+
 
     def __str__(self):
         return f"Quote request from {self.first_name} {self.last_name}"

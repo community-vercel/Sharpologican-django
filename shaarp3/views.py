@@ -1306,6 +1306,7 @@ def get_quote_requests(request):
                 "project_overview": quote.project_overview,
                 "budget": quote.budget,
                 "ready_to_start": quote.ready_to_start,
+                "published_date":quote.published_date,
             })
 
         return JsonResponse({"quote_requests": data}, status=200)
@@ -1501,7 +1502,6 @@ def add_home_detail(request):
         return JsonResponse({'message': 'Invalid method'}, status=405)
     
 @csrf_exempt
-
 def get_home_detail(request):
     if request.method == 'GET':
         try:
@@ -1526,3 +1526,30 @@ def get_home_detail(request):
                 return JsonResponse({''}, status=200)
         except HomeDetail.DoesNotExist:
             return JsonResponse({'message': 'Home Detail not found!'}, status=400)
+@csrf_exempt
+def get_quote_request_by_id(request, id):
+    try:
+        quote_request = QuoteRequest.objects.get(id=id)
+        
+        # Prepare the data
+        data = {
+            'id': quote_request.id,
+            'first_name': quote_request.first_name,
+            'last_name': quote_request.last_name,
+            'area_code': quote_request.area_code,
+            'phone_number': quote_request.phone_number,
+            'email': quote_request.email,
+            'company_name': quote_request.company_name,
+            'website': quote_request.website,
+            'services_required': quote_request.services_required,
+            'project_overview': quote_request.project_overview,
+            'budget': quote_request.budget,
+            'ready_to_start': quote_request.ready_to_start,
+            'published_date': quote_request.published_date.isoformat(),  # Format date in ISO format
+        }
+
+        # Return the data as a JSON response
+        return JsonResponse(data)
+    
+    except QuoteRequest.DoesNotExist:
+        return JsonResponse({'error': 'QuoteRequest not found'}, status=404)

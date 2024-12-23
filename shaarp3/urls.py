@@ -63,6 +63,7 @@ urlpatterns = [
     path('add-home-detail/', views.add_home_detail, name='add-home-detail'),
     path('get-home-detail/', views.get_home_detail, name='get-home-detail'),
 
+    path('quote-requests/<int:id>/', views.get_quote_request_by_id, name='get_quote_request_by_id'),
 
    
 ]
