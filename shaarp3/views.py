@@ -1054,7 +1054,7 @@ def get_portfolio_detail(request):
         # Prepare the response data
         response_data = {
             "id": service_detail.portfolio_id,
-            'title':service_detail.portfolio.title,
+            'title':service_detail.title,
             'header':service_detail.portfolio.heading,
             'image':service_detail.portfolio.image2.url if service_detail.portfolio.image2 else None,
             "detail": service_detail.detail,
@@ -1090,7 +1090,7 @@ def update_portfolio_detail(request):
         
         portfolio=Portfolio.objects.get(slug=slug)
         portfolio_detail = portfolioDetail.objects.get(portfolio=portfolio)
-
+        print(portfolio_detail.title)
         # Parse incoming JSON data
         try:
             updated_data = request.POST
@@ -1100,6 +1100,8 @@ def update_portfolio_detail(request):
         # Update the fields if they are provided in the request
         if 'heading' in updated_data:
             portfolio_detail.heading = updated_data.get('heading')
+        if 'title' in updated_data:
+            portfolio_detail.title = updated_data.get('title')
         if 'branch' in updated_data:
             portfolio_detail.branch = updated_data.get('branch')
         if 'types' in updated_data:

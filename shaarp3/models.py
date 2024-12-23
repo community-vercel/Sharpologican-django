@@ -53,6 +53,7 @@ class Portfolio(models.Model):
 class portfolioDetail(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name='details')
     heading = models.CharField(max_length=655)
+    title=models.CharField(max_length=9955, blank=True, null=True)
     branch = models.CharField(max_length=655)
     types = models.CharField(max_length=655)
     progam = models.CharField(max_length=655)
