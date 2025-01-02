@@ -188,4 +188,55 @@ class HomeDetail(models.Model):
         return self.metaname if self.metaname else 'Home Detail'
 
 
+class Job(models.Model):
+    CATEGORY_CHOICES = [
+        ('Development', 'Development'),
+        ('Design', 'Design'),
+        ('Marketing', 'Marketing'),
+        ('Sales', 'Sales'),
+    ]
+    heading = models.CharField(max_length=200)
+    description = models.TextField()
+    meta_title = models.CharField(max_length=200)
+    meta_description = models.TextField()
+    keywords = models.TextField()
+    title = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    description = models.TextField()
+    apply_link = models.URLField()
+
+    def __str__(self):
+        return self.title
+class Career(models.Model):
+    heading = models.CharField(max_length=300)
+    description = models.TextField()
+    meta_title = models.CharField(max_length=200)
+    meta_description = models.TextField()
+    keywords = models.TextField()
+  
+    def __str__(self):
+        return self.title
+
+class JobApplication(models.Model):
+    Job=models.ForeignKey(Job, on_delete=models.CASCADE, related_name='details',default=2)
+
+    name = models.CharField(max_length=285)
+    email = models.EmailField()
+    cv = models.FileField(upload_to='cv_uploads/', blank=True, null=True)  # Store the CV file
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Application from {self.name} ({self.email})"
+
+# Benefits Model
+class Benefit(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.title
     
+    
+######################Cheking  the  models#################################
+

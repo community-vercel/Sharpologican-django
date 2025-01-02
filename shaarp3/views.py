@@ -9,9 +9,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import json
-from .models import Service, AboutUs, Portfolio,Counts, Team, Testimonial, News, Contact,Client,ServiceDetail,HomeDetail,portfolioDetail,newsDetail,QuoteRequest,ContactUs
+from .models import Service,Job,JobApplication, AboutUs,Career, Portfolio,Counts,Benefit, Team, Testimonial, News, Contact,Client,ServiceDetail,HomeDetail,portfolioDetail,newsDetail,QuoteRequest,ContactUs
 from django.shortcuts import get_object_or_404
 import os
+from django.views import View
+from django.core.files.storage import FileSystemStorage
 
 from django.utils.text import slugify
 
@@ -1553,3 +1555,274 @@ def get_quote_request_by_id(request, id):
     
     except QuoteRequest.DoesNotExist:
         return JsonResponse({'error': 'QuoteRequest not found'}, status=404)
+    
+@csrf_exempt
+@super_admin_required
+def add_carrer(request):
+    try:
+        # Parse the JSON body of the request
+        data = json.loads(request.body)
+
+        # Extract values from the request data
+        title = data.get('title')
+     
+        location = data.get('location')
+        category = data.get('category')
+        description = data.get('description')
+        apply_link = data.get('apply_link')
+
+        # Validate the data (basic checks)
+        if not title or not location or not category or not description or not apply_link:
+            return JsonResponse({'error': 'Missing required fields'}, status=400)
+
+        # Save the data in the database
+        job = Job.objects.create(
+            title=title,
+            location=location,
+            category=category,
+            description=description,
+            apply_link=apply_link,
+        )
+
+        # Return a success response
+        return JsonResponse({'message': 'Job created successfully', 'job_id': job.id}, status=201)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+# E
+@csrf_exempt
+# @super_admin_required
+def add_enefits(request):
+    try:
+        data = json.loads(request.body)
+
+        title = data.get('title')
+        description = data.get('description')
+
+        if not title or not description:
+            return JsonResponse({'error': 'Missing required fields'}, status=400)
+
+        benefit = Benefit.objects.create(title=title, description=description)
+
+        return JsonResponse({'message': 'Benefit created successfully', 'benefit_id': benefit.id}, status=201)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def get_all_data(request):
+    # Get all objects from the database for each model
+    jobs = Job.objects.all()
+    benefits = Benefit.objects.all()
+
+    # Serialize the data into JSON format
+    career=list(Career.objects.values())
+    jobs_data = list(jobs.values())
+    benefits_data = list(benefits.values())
+    
+
+    # Create a dictionary containing all the data
+    data = {
+        "career": career,
+        "jobs": jobs_data,
+        "benefits": benefits_data,
+    }
+
+    # Return the response as JSON
+    return JsonResponse(data, safe=False)
+
+
+
+@csrf_exempt
+@super_admin_required
+def delete_data(request):
+    if request.method == "DELETE":
+        try:
+            # Parse the JSON body
+            data = json.loads(request.body)
+            item_type = data.get("type")  # e.g., "job", "benefit"
+            item_id = data.get("id")
+
+            if not item_type or not item_id:
+                return JsonResponse({"error": "Missing 'type' or 'id' in request body"}, status=400)
+
+            # Map type to model
+            model_mapping = {
+                "jobs": Job,
+                "benefits": Benefit,
+            }
+
+            model = model_mapping.get(item_type.lower())
+            if not model:
+                return JsonResponse({"error": "Invalid type provided"}, status=400)
+
+            # Attempt to delete the object
+            obj = model.objects.filter(id=item_id).first()
+            if not obj:
+                return JsonResponse({"error": f"No {item_type} found with ID {item_id}"}, status=404)
+
+            obj.delete()
+            return JsonResponse({"message": f"{item_type.capitalize()} deleted successfully"}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+@csrf_exempt
+def delete_job(request):
+    if request.method == 'DELETE':
+        try:
+            # Parse the JSON body
+            data = json.loads(request.body)
+            record_id = data.get('id')  # ID of the Job record to delete
+
+            if not record_id:
+                return JsonResponse({'error': 'Job ID is required'}, status=400)
+
+            # Delete the Job record
+            job = Job.objects.get(id=record_id)
+            job.delete()
+
+            return JsonResponse({'message': 'Job record deleted successfully'}, status=200)
+
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Job record not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method. Use DELETE.'}, status=405)
+
+@csrf_exempt
+@super_admin_required
+def add_metacareer(request):
+    try:
+        
+        
+        # Parse the JSON body of the request
+        data = json.loads(request.body)
+        print(data.get('heading'))
+        # Extract values from the request data
+        heading = data.get('heading')
+        description = data.get('description')
+        meta_title = data.get('meta_title')
+        meta_description = data.get('meta_description')
+        keywords = data.get('keywords')
+      
+
+        # Check if an entry already exists
+        job = Career.objects.first()  # Assuming there's only one record allowed
+
+        if job:
+            # Update existing record
+            job.heading = heading
+            job.description = description
+            job.meta_title = meta_title
+            job.meta_description = meta_description
+            job.keywords = keywords
+         
+            job.save()
+            return JsonResponse({'message': 'Job updated successfully', 'job_id': job.id}, status=200)
+        else:
+            # Create a new record
+            job =Career.objects.create(
+          
+                heading=heading,
+                description=description,
+                meta_title=meta_title,
+                meta_description=meta_description,
+                keywords=keywords,
+            
+            )
+            return JsonResponse({'message': 'Job created successfully', 'job_id': job.id}, status=201)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+@csrf_exempt
+def get_career(request):
+    try:
+        # Fetch the first Job record
+        job = Career.objects.first()
+
+        if job:
+            # Serialize the job data manually
+            job_data = {
+                'id': job.id,
+                'heading': job.heading,
+                'description': job.description,
+                'meta_title': job.meta_title,
+                'meta_description': job.meta_description,
+                'keywords': job.keywords,
+            
+            }
+            return JsonResponse({'data': job_data}, status=200)
+        else:
+            return JsonResponse({'message': 'No career data available'}, status=404)
+    
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def submit_application(request):
+    if request.method == 'POST':
+        try:
+            # Parse the incoming form data
+            id=request.POST.get('id')
+            name = request.POST.get('name')
+            email = request.POST.get('email')
+            cv = request.FILES.get('cv')
+        
+        
+            job = Job.objects.get(id=id)
+        
+        
+            if not name or not email or not cv:
+                return JsonResponse({"error": "Missing required fields"}, status=400)
+
+            # Save the uploaded CV to the file system
+            fs = FileSystemStorage()
+            filename = fs.save(cv.name, cv)
+            file_url = fs.url(filename)
+
+            # Save the application data to the database
+            application = JobApplication.objects.create(
+                Job=job,
+                name=name,
+                email=email,
+                cv=file_url  # Storing the file URL or path in the database
+            )
+
+            # Return success response
+            return JsonResponse({"message": "Application submitted successfully!"}, status=201)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@csrf_exempt
+@super_admin_required
+
+def get_all_applications(request):
+    try:
+        # Get all job applications from the database
+        applications = JobApplication.objects.all().values('Job__title','name', 'email', 'cv', 'applied_at')
+
+        # Convert the queryset to a list of dictionaries
+        applications_data = list(applications)
+
+        # Return the applications as JSON
+        return JsonResponse({'applications': applications_data}, status=200)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

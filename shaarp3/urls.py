@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     path('super-admin-login/', views.super_admin_login, name='super-admin-login'),
     path('add-service/', views.add_service, name='add-service'),
@@ -62,6 +63,15 @@ urlpatterns = [
     path('delete-counts/', views.delete_counts, name='get_count'),
     path('add-home-detail/', views.add_home_detail, name='add-home-detail'),
     path('get-home-detail/', views.get_home_detail, name='get-home-detail'),
+    path('add-jobs/', views.add_carrer, name='job_create'),
+    path('get-carrers/', views.get_career, name='job_create'),
+    path('add-metajobs/', views.add_metacareer, name='job_create'),
+    path('delete-data/', views.delete_data, name='delete_data'),
+    path('get-all-applications/', views.get_all_applications, name='get_all_applications'),
+
+    path('add-enefits/', views.add_enefits, name='benefit_create'),
+    path('get-data/', views.get_all_data, name='get_all_data'),
+    path('submit-application/', views.submit_application, name='submit_application'),
 
     path('quote-requests/<int:id>/', views.get_quote_request_by_id, name='get_quote_request_by_id'),
 
