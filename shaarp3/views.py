@@ -1706,7 +1706,6 @@ def delete_job(request):
 def add_metacareer(request):
     try:
         
-        
         # Parse the JSON body of the request
         data = json.loads(request.body)
         print(data.get('heading'))
