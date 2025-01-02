@@ -69,10 +69,11 @@ urlpatterns = [
     path('delete-data/', views.delete_data, name='delete_data'),
     path('get-all-applications/', views.get_all_applications, name='get_all_applications'),
 
+    path('get-job/', views.job_detail, name='job_detail'),
+
     path('add-enefits/', views.add_enefits, name='benefit_create'),
     path('get-data/', views.get_all_data, name='get_all_data'),
     path('submit-application/', views.submit_application, name='submit_application'),
-
     path('quote-requests/<int:id>/', views.get_quote_request_by_id, name='get_quote_request_by_id'),
 
    

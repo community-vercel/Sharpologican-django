@@ -195,13 +195,11 @@ class Job(models.Model):
         ('Marketing', 'Marketing'),
         ('Sales', 'Sales'),
     ]
-    heading = models.CharField(max_length=200)
-    description = models.TextField()
-    meta_title = models.CharField(max_length=200)
-    meta_description = models.TextField()
-    keywords = models.TextField()
+
     title = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
+    deadline=models.DateTimeField(auto_now_add=True,blank=True, null=True)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     description = models.TextField()
     apply_link = models.URLField()

@@ -14,6 +14,9 @@ from django.shortcuts import get_object_or_404
 import os
 from django.views import View
 from django.core.files.storage import FileSystemStorage
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
+from django.conf import settings
 
 from django.utils.text import slugify
 
@@ -1565,7 +1568,9 @@ def add_carrer(request):
 
         # Extract values from the request data
         title = data.get('title')
-     
+        slug=slugify(data.get('title'))
+        deadline = data.get('deadline')
+
         location = data.get('location')
         category = data.get('category')
         description = data.get('description')
@@ -1578,8 +1583,10 @@ def add_carrer(request):
         # Save the data in the database
         job = Job.objects.create(
             title=title,
+            slug=slug,
             location=location,
             category=category,
+            deadline=deadline,
             description=description,
             apply_link=apply_link,
         )
@@ -1612,7 +1619,7 @@ def add_enefits(request):
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
+@csrf_exempt
 def get_all_data(request):
     # Get all objects from the database for each model
     jobs = Job.objects.all()
@@ -1633,8 +1640,29 @@ def get_all_data(request):
 
     # Return the response as JSON
     return JsonResponse(data, safe=False)
+@csrf_exempt
+def job_detail(request):
+    body = json.loads(request.body)
+    slug = body.get('slug')
 
-
+    print(slug)
+    # Fetch the job using the slug or return a 404 if not found
+    job = Job.objects.get(slug=slug)
+    
+    # Manually prepare the job data as a dictionary
+    job_data = {
+        'id': job.id,
+        'title': job.title,
+        'slug': job.slug,
+        'location': job.location,
+        'deadline': job.deadline.isoformat() if job.deadline else None,
+        'category': job.get_category_display(),
+        'description': job.description,
+        'apply_link': job.apply_link,
+    }
+    
+    # Return the data as a JSON response
+    return JsonResponse(job_data)
 
 @csrf_exempt
 @super_admin_required
@@ -1801,7 +1829,49 @@ def submit_application(request):
                 email=email,
                 cv=file_url  # Storing the file URL or path in the database
             )
+      
+            mail_subject = 'Your Application has been Submitted Successfully'
+            message = f"""
+            Dear {application.name},
 
+            Thank you for applying to the {job.title} position at Sharplogicians. We have successfully received your application for this role. Below are the details we have on file:
+
+            - Position: {job.title}
+            - Location: {job.location}
+            
+            Our HR team will review your application and get in touch with you shortly. Should you need to update any details or have any questions, please don't hesitate to contact us.
+
+            Best regards,
+            The HR Team
+            Sharplogicians
+            https://sharplogicians.com
+            """
+
+            # Send the email
+            send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+            
+            mail_subject2 = 'New Application Received'
+            email2 = 'info@sharplogicians.com'
+            message2 = f"""
+            Dear HR Team,
+
+            You have received a new application for the {job.title} position at Sharplogicians. Below are the details of the applicant:
+            - Position: {job.title}
+            - Location: {job.location}
+            - Name: {application.name}
+            - Email: {application.email}
+            - CV: {application.cv}
+            
+            Please review the application and get in touch with the applicant as soon as possible.
+        
+            Best regards,
+            
+            Sharplogicians
+            https://sharplogicians.com
+            """
+
+            # Send the email
+            send_mail(mail_subject2, message2, settings.DEFAULT_FROM_EMAIL, [email2])
             # Return success response
             return JsonResponse({"message": "Application submitted successfully!"}, status=201)
 
