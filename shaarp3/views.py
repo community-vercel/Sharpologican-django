@@ -877,10 +877,10 @@ def delete_client_image(request, client_id):
 @super_admin_required  # Ensure only super admin can access this endpoint
 def add_service_detail(request):
     if request.method == "POST":
-        print('hi')
+     
         # Get service ID from request
         slug = request.POST.get('slug')
-        print(slug)
+       
         try:
             service = Service.objects.get(slug=slug)
         except Service.DoesNotExist:
@@ -956,13 +956,16 @@ def update_service_detail(request):
     try:
         # Retrieve the existing Service by slug
         service_detail = Service.objects.get(slug=slug)
-        print(service_detail)
         service=ServiceDetail.objects.get(service=service_detail)
         image_1 =request.FILES.get('image1')
         image_2 =request.FILES.get('image2')  
         # Parse the incoming JSON data from the request body
         updated_data = request.POST
+        metaname= updated_data.get('metaname')
+        metandes= updated_data.get('metades')
+        keywords= updated_data.get('keywords')
 
+        print(metaname,metandes,keywords)
         # Update the fields if they are provided in the request
   
         if 'detail' in updated_data:
@@ -976,11 +979,11 @@ def update_service_detail(request):
         if image_2:
             service.image_2 =image_2  # Update image if provided (for file handling, use request.FILES)
         if 'metaname' in updated_data:
-            service_detail.metaname= updated_data.get('metaname')
+            service.metaname= updated_data.get('metaname')
         if 'metades' in updated_data:
-            service_detail.metadescription =updated_data.get('metades')
+            service.metadescription =updated_data.get('metades')
         if 'keywords' in updated_data:
-            service_detail.keywords =updated_data.get('keywords')
+            service.keywords =updated_data.get('keywords')
 
         # Save the updated Service
         service.save()
