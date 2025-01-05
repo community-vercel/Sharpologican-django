@@ -5,6 +5,9 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+
+from .models import ServiceMetadata
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -1898,3 +1901,46 @@ def get_all_applications(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+class ServiceMetadataView(View):
+    @csrf_exempt
+    def get(self, request):
+        # Fetch the first (or only) metadata entry
+        metadata = ServiceMetadata.objects.first()
+        if metadata:
+            return JsonResponse({
+                "meta_title": metadata.meta_title,
+                "meta_description": metadata.meta_description,
+                "meta_keywords": metadata.meta_keywords,
+            })
+        return JsonResponse({"message": "No metadata found"}, status=404)
+    
+@csrf_exempt
+@super_admin_required
+def serviee_meta(request):
+    data = json.loads(request.body)
+
+        # Ensure required fields are present
+    meta_title = data.get("meta_title", "SharpLogicians | Service")
+    meta_description = data.get("meta_description", "SharpLogicians | Service | Creative Digital Agency | Service")
+    meta_keywords = data.get("meta_keywords", "bootstrap, business, consulting, coworking space, services, creative agency")
+
+    # Check if metadata already exists
+    metadata = ServiceMetadata.objects.first()
+
+    if metadata:
+        # Update existing metadata
+        metadata.meta_title = meta_title
+        metadata.meta_description = meta_description
+        metadata.meta_keywords = meta_keywords
+        metadata.save()
+        return JsonResponse({"message": "Metadata updated successfully"})
+    else:
+        # Create new metadata entry
+        ServiceMetadata.objects.create(
+            meta_title=meta_title,
+            meta_description=meta_description,
+            meta_keywords=meta_keywords,
+        )
+        return JsonResponse({"message": "Metadata created successfully"})

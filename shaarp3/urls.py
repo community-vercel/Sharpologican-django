@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import ServiceMetadataView
 
 
 urlpatterns = [
@@ -70,6 +71,8 @@ urlpatterns = [
     path('get-all-applications/', views.get_all_applications, name='get_all_applications'),
 
     path('get-job/', views.job_detail, name='job_detail'),
+    path("service-metadata/", ServiceMetadataView.as_view(), name="service_metadata"),
+    path("post-metadata/", views.serviee_meta, name="service_metadata"),
 
     path('add-enefits/', views.add_enefits, name='benefit_create'),
     path('get-data/', views.get_all_data, name='get_all_data'),

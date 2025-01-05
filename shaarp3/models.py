@@ -24,7 +24,13 @@ class ServiceDetail(models.Model):
 
     def __str__(self):
         return f"Details for {self.service.title}"
-    
+class ServiceMetadata(models.Model):
+    meta_title = models.CharField(max_length=255, default="SharpLogicians | Service")
+    meta_description = models.TextField(default="SharpLogicians | Service | Creative Digital Agency | Service")
+    meta_keywords = models.TextField(default="bootstrap, business, consulting, coworking space, services, creative agency")
+
+    def __str__(self):
+        return self.meta_title
 class AboutUs(models.Model):
     heading = models.CharField(max_length=3255)
     slug = models.CharField(max_length=655)
