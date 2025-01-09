@@ -78,6 +78,7 @@ urlpatterns = [
     path('get-data/', views.get_all_data, name='get_all_data'),
     path('submit-application/', views.submit_application, name='submit_application'),
     path('quote-requests/<int:id>/', views.get_quote_request_by_id, name='get_quote_request_by_id'),
+    path('add-contactss/', views.submit_contact,name='submit_contact'),
 
    
 ]

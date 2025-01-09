@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import json
-from .models import Service,Job,JobApplication, AboutUs,Career, Portfolio,Counts,Benefit, Team, Testimonial, News, Contact,Client,ServiceDetail,HomeDetail,portfolioDetail,newsDetail,QuoteRequest,ContactUs
+from .models import Service,Job,JobApplication, AboutUs,Career,Contacts, Portfolio,Counts,Benefit, Team, Testimonial, News, Contact,Client,ServiceDetail,HomeDetail,portfolioDetail,newsDetail,QuoteRequest,ContactUs
 from django.shortcuts import get_object_or_404
 import os
 from django.views import View
@@ -1282,6 +1282,64 @@ def submit_quote(request):
                 ready_to_start=ready_to_start
             )
             quote_request.save()
+            
+            mail_subject = 'Your Quote Request has been Submitted Successfully'
+            emaildefault='adeel@sharplogician.com'
+
+            message = f"""
+            Dear {first_name},
+
+            Thank you for reaching out to us with your quote request. We have successfully received your details. Here's a summary of your request:
+
+            - Name: {first_name} {last_name}
+            - Company: {company_name}
+            - Email: {email}
+            - Phone: {area_code} {phone_number}
+            - Services Required: {', '.join(services_required)}
+            - Budget: {budget}
+            - Ready to Start: {ready_to_start}
+
+            Our team will review your request and get back to you shortly. If you have any additional information or changes to your request, feel free to reply to this email.
+
+            Best regards,
+            The HR Team
+            Sharplogicians
+            https://sharplogicians.com
+            """
+
+           
+        
+
+            # Send the email
+            send_mail(mail_subject, message, emaildefault, [email])
+            
+            mail_subject2 = 'New Quote Request Received'
+            emaildefault='adeel@sharplogician.com'
+            email2 = 'info@sharplogicians.com'
+            message2 = f"""
+            Dear HR Team,
+
+            A new quote request has been received. Here are the details:
+
+            - Name: {first_name} {last_name}
+            - Company: {company_name}
+            - Email: {email}
+            - Phone: {area_code} {phone_number}
+            - Services Required: {', '.join(services_required)}
+            - Project Overview: {project_overview}
+            - Budget: {budget}
+            - Ready to Start: {ready_to_start}
+
+            Please review the request and follow up with the client.
+
+            Best regards,
+            
+            Sharplogicians
+            https://sharplogicians.com
+            """
+
+            # Send the email
+            send_mail(mail_subject2, message2, emaildefault, [email2])
 
             # Return success response
             return JsonResponse({'message': 'Quote request submitted successfully!'}, status=201)
@@ -1837,6 +1895,8 @@ def submit_application(request):
             )
       
             mail_subject = 'Your Application has been Submitted Successfully'
+            emaildefault='adeel@sharplogician.com'
+
             message = f"""
             Dear {application.name},
 
@@ -1854,9 +1914,10 @@ def submit_application(request):
             """
 
             # Send the email
-            send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+            send_mail(mail_subject, message, emaildefault, [email])
             
             mail_subject2 = 'New Application Received'
+            emaildefault='adeel@sharplogician.com'
             email2 = 'info@sharplogicians.com'
             message2 = f"""
             Dear HR Team,
@@ -1877,7 +1938,7 @@ def submit_application(request):
             """
 
             # Send the email
-            send_mail(mail_subject2, message2, settings.DEFAULT_FROM_EMAIL, [email2])
+            send_mail(mail_subject2, message2, emaildefault, [email2])
             # Return success response
             return JsonResponse({"message": "Application submitted successfully!"}, status=201)
 
@@ -1944,3 +2005,59 @@ def serviee_meta(request):
             meta_keywords=meta_keywords,
         )
         return JsonResponse({"message": "Metadata created successfully"})
+    
+
+    
+@csrf_exempt
+def submit_contact(request):
+    if request.method == 'POST':
+        try:
+            if not request.body:
+                return JsonResponse({"error": "Empty request body"}, status=400)
+
+            # Parse JSON data
+            data = json.loads(request.body.decode('utf-8'))
+            
+
+            # Extract fields from the request
+            name =  data.get('from_name')
+            email =  data.get('from_email')
+            phone =  data.get('from_phone')
+            subject = data.get('from_subject')
+            message =data.get('message')
+
+            # Validate the required fields
+            if not name or not email or not message:
+                return JsonResponse({'error': 'Name, email, and message are required fields.'}, status=400)
+
+            # Save the contact data to the database
+            contact = Contacts(name=name, email=email, phone=phone, subject=subject, message=message)
+            contact.save()
+
+            # Prepare the email content
+            admin_email = 'adeel@sharplogician.com'  # Replace with your admin email
+            mail_subject = f"New Contact Form Submission: {subject}"
+            mail_message = f"""
+            You have received a new contact form submission.
+
+            Name: {name}
+            Email: {email}
+            Phone: {phone}
+            Subject: {subject}
+            Message:
+            {message}
+            """
+            
+            # Send an email to the admin
+            send_mail(mail_subject, mail_message, email, [admin_email])
+
+            # Return a success response
+            return JsonResponse({'message': 'Contact form submitted successfully!'}, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid method. Use POST.'}, status=405)
