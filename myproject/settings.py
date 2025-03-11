@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'shaarp3',
+    'Espan',
+    'France',
+    'Netherlandss',
     'corsheaders',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -82,6 +85,18 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'Espan': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'es.sqlite3',
+    },
+    'France': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'fr.sqlite3',
+    },
+    'Netherlands': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'nd.sqlite3',
     }
 }
 
@@ -123,6 +138,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+DATABASE_ROUTERS = [
+    'myproject.db_routers.EspanRouter',
+    'myproject.db_routers.FranceRouter',
+    'myproject.db_routers.NetherlandsRouter',
+]
+
 CORS_ALLOW_HEADERS = [
     'content-type',
     'x-super-admin',  # Allow your custom header
