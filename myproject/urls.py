@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/es/', include('Espan.urls')),
     path('api/fr/', include('France.urls')),
-    path('api/nd/', include('Netherlandss.urls')),
+    path('api/nl/', include('Netherlandss.urls')),
+    path('api/de/', include('germanyapp.urls')),
     path('api/', include('shaarp3.urls')),
 
 ]

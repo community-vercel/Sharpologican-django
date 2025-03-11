@@ -28,6 +28,17 @@ class FranceRouter:
         if model._meta.app_label == 'France':
             return 'France'
         return None
+class GermanyRouter:
+
+    def db_for_read(self, model, **hints):
+        if model._meta.app_label == 'x`':
+            return 'Germany'
+        return None
+
+    def db_for_write(self, model, **hints):
+        if model._meta.app_label == 'Germany':
+            return 'Germany'
+        return None
 
 
 class NetherlandsRouter:
@@ -36,7 +47,7 @@ class NetherlandsRouter:
     Netherlands application.
     """
     def db_for_read(self, model, **hints):
-        if model._meta.app_label == 'Netherlands':
+        if model._meta.app_label == 'x`':
             return 'Netherlands'
         return None
 

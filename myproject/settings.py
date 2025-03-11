@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'Espan',
     'France',
     'Netherlandss',
+    'germanyapp',
     'corsheaders',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -97,6 +98,10 @@ DATABASES = {
     'Netherlands': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'nd.sqlite3',
+    },
+    'Germany': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'de.sqlite3',
     }
 }
 
