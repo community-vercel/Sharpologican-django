@@ -164,7 +164,15 @@ CORS_ALLOWED_ORIGINS = [
     # Replace with your Next.js frontend URL
     'http://localhost:3000',
     'http://127.0.0.1:8000',
-    'https://sharplogicians.com'
+    'https://sharplogicians.com',
+    'https://sharplogicians.fr',
+    'https://sharplogicians.de',
+    'https://sharplogicians.nl',
+    'https://sharplogicians.en',
+
+
+
+
    
     # Replace with your Next.js frontend URL
 ]
