@@ -169,6 +169,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://sharplogicians.de',
     'https://sharplogicians.nl',
     'https://sharplogicians.en',
+    'http://157.230.211.231:3006',
 
 
 
