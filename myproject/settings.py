@@ -148,6 +148,8 @@ DATABASE_ROUTERS = [
     'myproject.db_routers.EspanRouter',
     'myproject.db_routers.FranceRouter',
     'myproject.db_routers.NetherlandsRouter',
+    'myproject.db_routers.GermanyRouter',
+
 ]
 
 CORS_ALLOW_HEADERS = [
